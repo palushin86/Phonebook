@@ -1,13 +1,14 @@
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+import java.util.ArrayList;
 import java.util.List;
 
 @ManagedBean
@@ -26,6 +27,7 @@ public class PhonebookBean {
     private String workPhone;
     private PhoneEntity editedRecord = null;
     private String search;
+    private List<PhonebookBean> phones = new ArrayList<PhonebookBean>();
 
     public String getFirstName() {
         return firstName;
@@ -91,6 +93,14 @@ public class PhonebookBean {
         this.editedRecord = editedRecord;
     }
 
+    public List<PhonebookBean> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(List<PhonebookBean> phones) {
+        this.phones = phones;
+    }
+
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void addRecord() {
         PhoneEntity record = new PhoneEntity(
@@ -101,8 +111,6 @@ public class PhonebookBean {
                 mobilePhone,
                 homePhone
         );
-
-        System.out.println(record);
 
         try {
             transaction.begin();
@@ -158,17 +166,16 @@ public class PhonebookBean {
         this.workPhone = rec.getWorkPhoneNumber();
         this.mobilePhone = rec.getMobilePhoneNumber();
         this.homePhone = rec.getHomePhoneNumber();
-        refreshInputPanel();
     }
 
     public void cancelEditing() {
         this.editedRecord = null;
         clearInputPanel();
-        refreshInputPanel();
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void deleteRecord(PhoneEntity rec) {
+
         try {
             transaction.begin();
             entityManager.createQuery("delete from PhoneEntity p where p.id=:id")
@@ -185,10 +192,9 @@ public class PhonebookBean {
             }
         }
 
-        refreshRecordsTable();
     }
 
-    public List getAllRecords() {
+    public void fetchAllRecords() {
         List list;
 
         if (search == null || search.equals("")) {
@@ -206,14 +212,12 @@ public class PhonebookBean {
                     .getResultList();
         }
 
-        System.out.println(list);
-
-        return list;
+        phones.clear();
+        phones.addAll(list);
     }
 
     public void clearSearch() {
         this.search = "";
-        refreshRecordsTable();
     }
 
     private void clearInputPanel() {
@@ -223,14 +227,6 @@ public class PhonebookBean {
         this.workPhone = "";
         this.mobilePhone = "";
         this.homePhone = "";
-    }
-
-    private void refreshInputPanel() {
-        FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add("mainForm:inputPanel");
-    }
-
-    private void refreshRecordsTable() {
-        FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add("mainForm:recordsTable");
     }
 
 }
