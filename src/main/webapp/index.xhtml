@@ -75,27 +75,33 @@
                             cellspacing="1" cellpadding="1" rowClasses = "oddRowStyle, evenRowStyle">
 
                   <h:column>
-                     <f:facet name = "header">Фамилия</f:facet>#{record.lastName}
+                     <f:facet name = "header">Фамилия</f:facet>
+                     <h:outputText value="#{record.lastName}"/>
                   </h:column>
 
                   <h:column>
-                     <f:facet name = "header">Имя</f:facet>#{record.firstName}
+                     <f:facet name = "header">Имя</f:facet>
+                     <h:outputText value="#{record.firstName}"/>
                   </h:column>
 
                   <h:column>
-                     <f:facet name = "header">Отчество</f:facet>#{record.middleName}
+                     <f:facet name = "header">Отчество</f:facet>
+                     <h:outputText value="#{record.middleName}"/>
                   </h:column>
 
                   <h:column>
-                     <f:facet name = "header">Мобильный телефон</f:facet>#{record.mobilePhoneNumber}
+                     <f:facet name = "header">Мобильный телефон</f:facet>
+                     <h:outputText value="#{record.mobilePhone}"/>
                   </h:column>
 
                   <h:column>
-                     <f:facet name = "header">Рабочий телефон</f:facet>#{record.workPhoneNumber}
+                     <f:facet name = "header">Рабочий телефон</f:facet>
+                     <h:outputText value="#{record.workPhone}"/>
                   </h:column>
 
                   <h:column>
-                     <f:facet name = "header">Домашний телефон</f:facet>#{record.homePhoneNumber}
+                     <f:facet name = "header">Домашний телефон</f:facet>
+                     <h:outputText value="#{record.homePhone}"/>
                   </h:column>
 
                   <h:column>
