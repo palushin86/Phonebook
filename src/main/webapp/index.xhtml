@@ -18,7 +18,7 @@
                   <h:commandLink>
                      <h:graphicImage url="image/search.png" style="border:0; width: 25px" />
                   </h:commandLink>
-                  <h:commandLink action="#{phonebookBean.clearSearch()}">
+                  <h:commandLink action="#{phonebookBean.cleanSearch()}">
                      <h:graphicImage url="image/clear.png" style="border:0; width: 25px" />
                   </h:commandLink>
                </h:panelGrid>
@@ -122,6 +122,15 @@
 
          </h:panelGrid>
       </p:panel>
+
+      <p:panel toggleTitle="true" id="errorPanel" toggleable="true" closable="true"
+               collapsed="false" rendered="#{flash.keep.errorDetails != null}">
+         <f:facet name="header">
+            <p:outputLabel value="Произошла ошибка" escape="true"/>
+         </f:facet>
+         <h:outputText value="#{flash.keep.errorDetails}"/>
+      </p:panel>
+
    </h:body>
 </f:view>
 </html>

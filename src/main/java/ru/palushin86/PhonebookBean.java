@@ -1,12 +1,12 @@
-import javax.annotation.PostConstruct;
+package ru.palushin86;
+
+import ru.palushin86.entities.ContactDetailsEntity;
+
 import javax.annotation.Resource;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +25,9 @@ public class PhonebookBean {
     private String homePhone;
     private String mobilePhone;
     private String workPhone;
-    private PhoneEntity editedRecord = null;
+    private ContactDetailsEntity editedRecord = null;
     private String search;
-    private List<PhonebookBean> phones = new ArrayList<PhonebookBean>();
+    private List<ContactDetailsEntity> phones = new ArrayList<ContactDetailsEntity>();
 
     public String getFirstName() {
         return firstName;
@@ -77,7 +77,7 @@ public class PhonebookBean {
         this.workPhone = workPhone;
     }
 
-    public PhoneEntity getEditedRecord() {
+    public ContactDetailsEntity getEditedRecord() {
         return editedRecord;
     }
 
@@ -89,28 +89,26 @@ public class PhonebookBean {
         this.search = search;
     }
 
-    public void setEditedRecord(PhoneEntity editedRecord) {
+    public void setEditedRecord(ContactDetailsEntity editedRecord) {
         this.editedRecord = editedRecord;
     }
 
-    public List<PhonebookBean> getPhones() {
+    public List<ContactDetailsEntity> getPhones() {
         return phones;
     }
 
-    public void setPhones(List<PhonebookBean> phones) {
+    public void setPhones(List<ContactDetailsEntity> phones) {
         this.phones = phones;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void addRecord() {
-        PhoneEntity record = new PhoneEntity(
-                firstName,
-                middleName,
-                lastName,
-                workPhone,
-                mobilePhone,
-                homePhone
-        );
+    public void addRecord() throws Exception {
+        ContactDetailsEntity record = new ContactDetailsEntity();
+        record.setFirstName(firstName);
+        record.setMiddleName(middleName);
+        record.setLastName(lastName);
+        record.setWorkPhoneNumber(workPhone);
+        record.setMobilePhoneNumber(mobilePhone);
+        record.setHomePhoneNumber(homePhone);
 
         try {
             transaction.begin();
@@ -118,20 +116,14 @@ public class PhonebookBean {
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            //todo
-            try {
-                transaction.rollback();
-            } catch (SystemException ex) {
-                ex.printStackTrace();
-            }
+            transaction.rollback();
         }
 
-        clearInputPanel();
+        cleanInputPanel();
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void saveRecord() {
-        PhoneEntity record = entityManager.find(PhoneEntity.class, editedRecord.getId());
+    public void saveRecord() throws Exception {
+        ContactDetailsEntity record = entityManager.find(ContactDetailsEntity.class, editedRecord.getId());
         record.setFirstName(firstName);
         record.setLastName(lastName);
         record.setMiddleName(middleName);
@@ -143,84 +135,73 @@ public class PhonebookBean {
             transaction.begin();
             entityManager.merge(record);
             transaction.commit();
+            cleanEditing();
+            cleanInputPanel();
         } catch (Exception e) {
             e.printStackTrace();
-            //todo
-            try {
-                transaction.rollback();
-            } catch (SystemException ex) {
-                ex.printStackTrace();
-            }
+            transaction.rollback();
         }
 
-        editedRecord = null;
-
-        clearInputPanel();
     }
 
-    public void editRecord(PhoneEntity rec) {
-        this.editedRecord = rec;
-        this.firstName = rec.getFirstName();
-        this.middleName = rec.getMiddleName();
-        this.lastName = rec.getLastName();
-        this.workPhone = rec.getWorkPhoneNumber();
-        this.mobilePhone = rec.getMobilePhoneNumber();
-        this.homePhone = rec.getHomePhoneNumber();
+    public void editRecord(ContactDetailsEntity record) {
+        this.editedRecord = record;
+        this.firstName = record.getFirstName();
+        this.middleName = record.getMiddleName();
+        this.lastName = record.getLastName();
+        this.workPhone = record.getWorkPhoneNumber();
+        this.mobilePhone = record.getMobilePhoneNumber();
+        this.homePhone = record.getHomePhoneNumber();
     }
 
     public void cancelEditing() {
-        this.editedRecord = null;
-        clearInputPanel();
+        cleanEditing();
+        cleanInputPanel();
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void deleteRecord(PhoneEntity rec) {
+    public void deleteRecord(ContactDetailsEntity rec) throws Exception {
 
         try {
             transaction.begin();
-            entityManager.createQuery("delete from PhoneEntity p where p.id=:id")
-                    .setParameter("id", rec.getId())
-                    .executeUpdate();
+            ContactDetailsEntity contactDetailsEntity = entityManager.find(ContactDetailsEntity.class, rec.getId());
+            entityManager.remove(contactDetailsEntity);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            //todo
-            try {
-                transaction.rollback();
-            } catch (SystemException ex) {
-                ex.printStackTrace();
-            }
+            transaction.rollback();
         }
 
     }
 
     public void fetchAllRecords() {
-        List list;
+        String query;
 
         if (search == null || search.equals("")) {
-            list = entityManager.createQuery("from PhoneEntity").getResultList();
+            query = "from ContactDetailsEntity";
         } else {
-            list = entityManager.createQuery("from PhoneEntity where " +
-                    "lower(firstName) LIKE lower(:search) or " +
-                    "lower(lastName) LIKE lower(:search) or " +
-                    "lower(middleName) LIKE lower(:search) or " +
-                    "lower(mobilePhoneNumber) LIKE lower(:search) or " +
-                    "lower(homePhoneNumber) LIKE lower(:search) or " +
-                    "lower(workPhoneNumber) LIKE lower(:search)" +
-                    "")
-                    .setParameter("search", "%" + search + "%")
-                    .getResultList();
+            query = "from ContactDetailsEntity where " +
+                    "lower(firstName) LIKE lower('%" + search + "%') or " +
+                    "lower(lastName) LIKE lower('%" + search + "%') or " +
+                    "lower(middleName) LIKE lower('%" + search + "%') or " +
+                    "lower(mobilePhoneNumber) LIKE lower('%" + search + "%') or " +
+                    "lower(homePhoneNumber) LIKE lower('%" + search + "%') or " +
+                    "lower(workPhoneNumber) LIKE lower('%" + search + "%')";
         }
 
+        List<ContactDetailsEntity> records = entityManager.createQuery(query, ContactDetailsEntity.class).getResultList();
         phones.clear();
-        phones.addAll(list);
+        phones.addAll(records);
     }
 
-    public void clearSearch() {
+    public void cleanSearch() {
         this.search = "";
     }
 
-    private void clearInputPanel() {
+    private void cleanEditing() {
+        this.editedRecord = null;
+    }
+
+    private void cleanInputPanel() {
         this.firstName = "";
         this.middleName = "";
         this.lastName = "";

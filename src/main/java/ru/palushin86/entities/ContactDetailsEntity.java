@@ -1,8 +1,10 @@
+package ru.palushin86.entities;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "phones")
-public class PhoneEntity {
+public class ContactDetailsEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,17 +29,8 @@ public class PhoneEntity {
     @Column(name = "home_phone_number")
     private String homePhoneNumber;
 
-    public PhoneEntity() {
+    public ContactDetailsEntity() {
 
-    }
-
-    public PhoneEntity(String firstName, String middleName, String lastName, String workPhoneNumber, String mobilePhoneNumber, String homePhoneNumber) {
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.workPhoneNumber = workPhoneNumber;
-        this.mobilePhoneNumber = mobilePhoneNumber;
-        this.homePhoneNumber = homePhoneNumber;
     }
 
     public int getId() {
@@ -98,7 +91,7 @@ public class PhoneEntity {
 
     @Override
     public String toString() {
-        return "PhoneEntity{" +
+        return "ContactDetailsEntity{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
