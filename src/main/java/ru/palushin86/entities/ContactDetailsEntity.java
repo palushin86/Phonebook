@@ -29,10 +29,6 @@ public class ContactDetailsEntity {
     @Column(name = "home_phone_number")
     private String homePhoneNumber;
 
-    public ContactDetailsEntity() {
-
-    }
-
     public int getId() {
         return id;
     }
