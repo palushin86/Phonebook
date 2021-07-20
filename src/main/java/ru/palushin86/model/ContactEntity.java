@@ -1,10 +1,10 @@
-package ru.palushin86.entities;
+package ru.palushin86.model;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "phones")
-public class ContactDetailsEntity {
+public class ContactEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,117 +8,106 @@
    <h:head><title>Телефонная книга</title></h:head>
    <h:body>
       <p:panel id="horizontal" header="Телефонная книга" toggleable="false" toggleOrientation="horizontal">
-         <h:outputText value="#{phonebookMB.fetchAllRecords()}" />
 
          <h:panelGrid columns="1" cellpadding="1" style="margin: 0 auto; text-align: center">
             <h:form id="searchForm">
                <h:panelGrid columns="4" cellpadding="10" style="margin: 0 auto">
-                  <h:outputLabel value = "Поиск" />
-                  <h:inputText value="#{phonebookMB.search}" />
-                  <h:commandLink>
+                  <p:outputLabel value = "Поиск" />
+                  <p:inputText value="#{contactViewBean.search}" onchange="#{contactViewBean.fetchContacts()}"/>
+                  <p:commandLink action="#{contactViewBean.fetchContacts()}" update="recordsForm">
                      <h:graphicImage url="image/search.png" style="border:0; width: 25px" />
-                  </h:commandLink>
-                  <h:commandLink action="#{phonebookMB.cleanSearch()}">
+                  </p:commandLink>
+                  <p:commandLink action="#{contactViewBean.cleanSearch()}" update="searchForm recordsForm">
                      <h:graphicImage url="image/clear.png" style="border:0; width: 25px" />
-                  </h:commandLink>
+                  </p:commandLink>
                </h:panelGrid>
             </h:form>
 
             <h:form id="inputForm">
-               <h:panelGrid id="inputPanel" columns="4"  cellpadding="10">
+               <h:panelGrid id="inputPanel" columns="4"  cellpadding="10" style="margin: 0 auto">
 
-                  <h:outputLabel value = "Фамилия" />
-                  <h:inputText value="#{phonebookMB.lastName}" />
-                  <h:outputLabel value = "Мобильный телефон" />
-                  <h:inputText value="#{phonebookMB.mobilePhone}"  />
-                  <h:outputLabel value = "Имя" />
-                  <h:inputText value="#{phonebookMB.firstName}" />
-                  <h:outputLabel value = "Рабочий телефон" />
-                  <h:inputText value="#{phonebookMB.workPhone}" />
-                  <h:outputLabel value = "Отчество" />
-                  <h:inputText value="#{phonebookMB.middleName}"  />
-                  <h:outputLabel value = "Домашний телефон" />
-                  <h:inputText value="#{phonebookMB.homePhone}" />
+                  <p:outputLabel value = "Фамилия" />
+                  <p:inputText value="#{contactViewBean.lastName}" />
+                  <p:outputLabel value = "Мобильный телефон" />
+                  <p:inputText value="#{contactViewBean.mobilePhone}"  />
+                  <p:outputLabel value = "Имя" />
+                  <p:inputText value="#{contactViewBean.firstName}" />
+                  <p:outputLabel value = "Рабочий телефон" />
+                  <p:inputText value="#{contactViewBean.workPhone}" />
+                  <p:outputLabel value = "Отчество" />
+                  <p:inputText value="#{contactViewBean.middleName}"  />
+                  <p:outputLabel value = "Домашний телефон" />
+                  <p:inputText value="#{contactViewBean.homePhone}" />
 
                   <f:facet name = "footer">
                      <h:panelGroup style = "display:block; text-align:center">
-                        <h:commandButton id = "submit"
+                        <p:commandButton id = "edit_submit_btn"
                                          value = "Добавить запись"
-                                         action="#{phonebookMB.addRecord()}" rendered="#{phonebookMB.editedRecord == null}"/>
-                        <h:commandButton id = "submitw"
+                                         update="recordsForm inputForm" ajax="true"
+                                         action="#{contactViewBean.addRecord()}" rendered="#{contactViewBean.editedRecord == null}"/>
+                        <p:commandButton id = "edit_save_btn"
                                          value = "Сохранить запись"
-                                         action="#{phonebookMB.saveRecord()}" rendered="#{phonebookMB.editedRecord != null}"/>
-                        <h:commandButton id = "submitw2"
+                                         update="recordsForm inputForm" ajax="true"
+                                         action="#{contactViewBean.saveRecord()}" rendered="#{contactViewBean.editedRecord != null}"/>
+                        <p:commandButton id = "edit_cancel_btn"
                                          value = "Отмена"
+                                         update="recordsForm inputForm" ajax="true"
                                          style="margin-left: 20px"
-                                         action="#{phonebookMB.cancelEditing()}" rendered="#{phonebookMB.editedRecord != null}"/>
+                                         action="#{contactViewBean.cancelEditing()}" rendered="#{contactViewBean.editedRecord != null}"/>
                      </h:panelGroup>
                   </f:facet>
                </h:panelGrid>
             </h:form>
 
-            <style type="text/css">
-               .oddRowStyle{
-                  text-align:center;
-                  background:none repeat scroll 0 0 #FFFFFF;
-                  border-top:1px solid #BBBBBB;
-               }
-               .evenRowStyle{
-                  text-align:center;
-                  background:none repeat scroll 0 0 #f4eff9;
-                  border-top:1px solid #BBBBBB;
-               }
-            </style>
-
             <h:form id="recordsForm">
-               <h:dataTable id = "recordsTable" var = "record" value = "#{phonebookMB.phones}"
-                            cellspacing="1" cellpadding="1" rowClasses = "oddRowStyle, evenRowStyle">
+               <p:dataTable id="contactsTable" widgetVar="contactsTable" var="contact"
+                            value="#{contactViewBean.phones}" lazy="false"
+                            emptyMessage="Нет записей"
+                            cellspacing="1" cellpadding="1">
 
-                  <h:column>
+                  <p:column>
                      <f:facet name = "header">Фамилия</f:facet>
-                     <h:outputText value="#{record.lastName}"/>
-                  </h:column>
+                     <h:outputText value="#{contact.lastName}"/>
+                  </p:column>
 
-                  <h:column>
+                  <p:column>
                      <f:facet name = "header">Имя</f:facet>
-                     <h:outputText value="#{record.firstName}"/>
-                  </h:column>
+                     <h:outputText value="#{contact.firstName}"/>
+                  </p:column>
 
-                  <h:column>
+                  <p:column>
                      <f:facet name = "header">Отчество</f:facet>
-                     <h:outputText value="#{record.middleName}"/>
-                  </h:column>
+                     <h:outputText value="#{contact.middleName}"/>
+                  </p:column>
 
-                  <h:column>
+                  <p:column>
                      <f:facet name = "header">Мобильный телефон</f:facet>
-                      #{record.mobilePhoneNumber}
-                  </h:column>
+                      <h:outputText value="#{contact.mobilePhoneNumber}"/>
+                  </p:column>
 
-                  <h:column>
+                  <p:column>
                      <f:facet name = "header">Рабочий телефон</f:facet>
-                      #{record.workPhoneNumber}
-                  </h:column>
+                      <h:outputText value="#{contact.workPhoneNumber}"/>
+                  </p:column>
 
-                  <h:column>
+                  <p:column>
                      <f:facet name = "header">Домашний телефон</f:facet>
-                      #{record.homePhoneNumber}
-                  </h:column>
+                      <h:outputText value="#{contact.homePhoneNumber}"/>
+                  </p:column>
 
-                  <h:column>
-                      <h:commandLink action="#{phonebookMB.editRecord(record)}">
+                  <p:column>
+                      <h:commandLink action="#{contactViewBean.editRecord(contact)}">
                           <h:graphicImage url="image/edit.png" style="border:0; width: 25px"/>
                       </h:commandLink>
-                  </h:column>
+                  </p:column>
 
-                  <h:column>
-                     <h:commandLink action="#{phonebookMB.deleteRecord(record)}">
+                  <p:column>
+                     <h:commandLink action="#{contactViewBean.deleteRecord(contact)}">
                         <h:graphicImage url="image/delete.png" style="border:0; width: 25px" />
                      </h:commandLink>
-                  </h:column>
-               </h:dataTable>
+                  </p:column>
+               </p:dataTable>
             </h:form>
-
-            <h:outputText value="Нет записей" rendered="#{phonebookMB.phones.size() == 0}"/>
 
          </h:panelGrid>
       </p:panel>
