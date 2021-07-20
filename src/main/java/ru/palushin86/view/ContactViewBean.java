@@ -18,7 +18,7 @@ public class ContactViewBean implements Serializable {
     @Inject
     private ContactService contactService;
     private ContactEntity editedRecord = null;
-    private List<ContactEntity> phones = new ArrayList<ContactEntity>();
+    private List<ContactEntity> phones = new ArrayList();
     private String firstName;
     private String middleName;
     private String lastName;

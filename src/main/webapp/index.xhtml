@@ -16,11 +16,9 @@
                   <p:inputText value="#{contactViewBean.search}" onchange="#{contactViewBean.fetchContacts()}"/>
                   <p:commandLink action="#{contactViewBean.fetchContacts()}" update="recordsForm">
                       <i class="pi pi-search"/>
-                     <!--<h:graphicImage url="image/search.png" style="border:0; width: 25px" />-->
                   </p:commandLink>
                   <p:commandLink action="#{contactViewBean.cleanSearch()}" update="searchForm recordsForm">
                       <i class="pi pi-ban"/>
-<!--                     <h:graphicImage url="image/clear.png" style="border:0; width: 25px" />-->
                   </p:commandLink>
                </h:panelGrid>
             </h:form>
@@ -110,18 +108,8 @@
                   </p:column>
                </p:dataTable>
             </h:form>
-
          </h:panelGrid>
       </p:panel>
-
-      <p:panel toggleTitle="true" id="errorPanel" toggleable="true" closable="true"
-               collapsed="false" rendered="#{flash.keep.errorDetails != null}">
-         <f:facet name="header">
-            <p:outputLabel value="Произошла ошибка" escape="true"/>
-         </f:facet>
-         <h:outputText value="#{flash.keep.errorDetails}"/>
-      </p:panel>
-
    </h:body>
 </f:view>
 </html>
