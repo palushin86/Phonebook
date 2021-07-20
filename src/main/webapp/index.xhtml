@@ -15,10 +15,12 @@
                   <p:outputLabel value = "Поиск" />
                   <p:inputText value="#{contactViewBean.search}" onchange="#{contactViewBean.fetchContacts()}"/>
                   <p:commandLink action="#{contactViewBean.fetchContacts()}" update="recordsForm">
-                     <h:graphicImage url="image/search.png" style="border:0; width: 25px" />
+                      <i class="pi pi-search"/>
+                     <!--<h:graphicImage url="image/search.png" style="border:0; width: 25px" />-->
                   </p:commandLink>
                   <p:commandLink action="#{contactViewBean.cleanSearch()}" update="searchForm recordsForm">
-                     <h:graphicImage url="image/clear.png" style="border:0; width: 25px" />
+                      <i class="pi pi-ban"/>
+<!--                     <h:graphicImage url="image/clear.png" style="border:0; width: 25px" />-->
                   </p:commandLink>
                </h:panelGrid>
             </h:form>
@@ -97,13 +99,13 @@
 
                   <p:column>
                       <h:commandLink action="#{contactViewBean.editRecord(contact)}">
-                          <h:graphicImage url="image/edit.png" style="border:0; width: 25px"/>
+                          <i class="pi pi-user-edit"/>
                       </h:commandLink>
                   </p:column>
 
                   <p:column>
                      <h:commandLink action="#{contactViewBean.deleteRecord(contact)}">
-                        <h:graphicImage url="image/delete.png" style="border:0; width: 25px" />
+                         <i class="pi pi-trash"/>
                      </h:commandLink>
                   </p:column>
                </p:dataTable>
