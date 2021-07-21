@@ -61,7 +61,7 @@
 
             <h:form id="recordsForm">
                <p:dataTable id="contactsTable" widgetVar="contactsTable" var="contact"
-                            value="#{contactViewBean.phones}" lazy="false"
+                            value="#{contactViewBean.contacts}" lazy="false"
                             emptyMessage="Нет записей"
                             cellspacing="1" cellpadding="1">
 
@@ -107,6 +107,24 @@
                      </h:commandLink>
                   </p:column>
                </p:dataTable>
+            </h:form>
+
+            <h:form id="exportForm">
+               <p:panel widgetVar="progressPanel"
+                        visible="false"
+                        style="border:none;"
+                        closable="true"
+                        toggleable="true">
+                  <p:progressBar
+                          style="height:3px; width:400px; margin: 10px auto"
+                          mode="indeterminate"/>
+               </p:panel>
+               <p:commandButton icon="pi pi-file-excel"
+                                value="Экспорт в Excel"
+                                widgetVar="exportToExcel"
+                                actionListener="#{contactViewBean.exportToExcel()}"
+                                onstart="PF('exportToExcel').disable();PF('progressPanel').show();"
+                                oncomplete="PF('exportToExcel').enable();PF('progressPanel').close();"/>
             </h:form>
          </h:panelGrid>
       </p:panel>

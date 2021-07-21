@@ -1,7 +1,9 @@
 package ru.palushin86.view;
 
+import org.apache.log4j.Logger;
 import ru.palushin86.model.ContactEntity;
 import ru.palushin86.services.ContactService;
+import ru.palushin86.utils.ExcelWriter;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -17,8 +19,11 @@ import java.util.List;
 public class ContactViewBean implements Serializable {
     @Inject
     private ContactService contactService;
+    @Inject
+    private ExcelWriter excelWriter;
+    private final Logger log = Logger.getLogger(this.getClass().getName());
     private ContactEntity editedRecord = null;
-    private List<ContactEntity> phones = new ArrayList();
+    private List<ContactEntity> contacts = new ArrayList();
     private String firstName;
     private String middleName;
     private String lastName;
@@ -43,11 +48,20 @@ public class ContactViewBean implements Serializable {
         );
         cleanInputPanel();
         fetchContacts();
+        log.info("the record is created: " +
+                "first name=" + firstName +
+                ", last name=" + lastName +
+                ", middle name=" + middleName +
+                ", mobile phone=" + mobilePhone +
+                ", work phone=" + workPhone +
+                ", home phone=" + homePhone
+        );
     }
 
     public void saveRecord() {
+        Integer id = editedRecord.getId();
         contactService.saveContact(
-                editedRecord.getId(),
+                id,
                 firstName,
                 middleName,
                 lastName,
@@ -58,6 +72,14 @@ public class ContactViewBean implements Serializable {
         cleanEditing();
         cleanInputPanel();
         fetchContacts();
+        log.info("the record id=" + id + " is saved: " +
+                "first name=" + firstName +
+                ", last name=" + lastName +
+                ", middle name=" + middleName +
+                ", mobile phone=" + mobilePhone +
+                ", work phone=" + workPhone +
+                ", home phone=" + homePhone
+        );
     }
 
     public void editRecord(ContactEntity contact) {
@@ -70,9 +92,10 @@ public class ContactViewBean implements Serializable {
         this.homePhone = contact.getHomePhoneNumber();
     }
 
-    public void deleteRecord(ContactEntity rec) {
-        contactService.deleteById(rec.getId());
+    public void deleteRecord(ContactEntity contact) {
+        contactService.deleteById(contact.getId());
         fetchContacts();
+        log.info("the record id=" + contact.getId() + " deleted");
     }
 
     public void cancelEditing() {
@@ -89,8 +112,12 @@ public class ContactViewBean implements Serializable {
             records = contactService.getContacts(search);
         }
 
-        phones.clear();
-        phones.addAll(records);
+        contacts.clear();
+        contacts.addAll(records);
+    }
+
+    public void exportToExcel() {
+        excelWriter.exportPhonebook(contacts);
     }
 
     public void cleanSearch() {
@@ -162,12 +189,12 @@ public class ContactViewBean implements Serializable {
         this.editedRecord = editedRecord;
     }
 
-    public List<ContactEntity> getPhones() {
-        return phones;
+    public List<ContactEntity> getContacts() {
+        return contacts;
     }
 
-    public void setPhones(List<ContactEntity> phones) {
-        this.phones = phones;
+    public void setContacts(List<ContactEntity> contacts) {
+        this.contacts = contacts;
     }
 
     private void cleanEditing() {
