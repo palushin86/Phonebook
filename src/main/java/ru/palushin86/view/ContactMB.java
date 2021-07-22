@@ -6,15 +6,15 @@ import ru.palushin86.services.exporter.ExporterService;
 
 import org.apache.log4j.Logger;
 
-import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@ManagedBean
+@Named
 @ViewScoped
 public class ContactMB implements Serializable {
     @Inject
