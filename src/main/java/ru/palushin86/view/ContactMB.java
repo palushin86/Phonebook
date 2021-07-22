@@ -6,24 +6,24 @@ import ru.palushin86.services.exporter.ExporterService;
 
 import org.apache.log4j.Logger;
 
+import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Named
+@ManagedBean
 @ViewScoped
-public class ContactViewBean implements Serializable {
+public class ContactMB implements Serializable {
     @Inject
     private ContactService contactService;
     @Inject
     private ExporterService exporterService;
     private final Logger log = Logger.getLogger(this.getClass().getSimpleName());
     private ContactEntity editedRecord = null;
-    private List<ContactEntity> contacts = new ArrayList();
+    private List<ContactEntity> contacts = new ArrayList<ContactEntity>();
     private String firstName;
     private String middleName;
     private String lastName;
@@ -38,14 +38,14 @@ public class ContactViewBean implements Serializable {
     }
 
     public void addRecord() {
-        contactService.addContact(
-                firstName,
-                middleName,
-                lastName,
-                workPhone,
-                mobilePhone,
-                homePhone
-        );
+        ContactEntity contact = new ContactEntity();
+        contact.setFirstName(firstName);
+        contact.setMiddleName(middleName);
+        contact.setLastName(lastName);
+        contact.setWorkPhoneNumber(workPhone);
+        contact.setMobilePhoneNumber(mobilePhone);
+        contact.setHomePhoneNumber(homePhone);
+        contactService.addContact(contact);
         log.info("the record is created: " +
                 "first name=" + firstName +
                 ", last name=" + lastName +

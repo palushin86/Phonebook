@@ -5,14 +5,7 @@ import ru.palushin86.model.ContactEntity;
 import java.util.List;
 
 public interface ContactService {
-    void addContact(
-            String firstName,
-            String middleName,
-            String lastName,
-            String workPhone,
-            String mobilePhone,
-            String homePhone
-    );
+    void addContact(ContactEntity contact);
     void saveContact(
             Integer id,
             String firstName,
@@ -23,7 +16,7 @@ public interface ContactService {
             String homePhone
     );
     void deleteById(Integer id);
-    ContactEntity getContactDetailBiId(Integer id);
+    ContactEntity getContactById(Integer id);
     List<ContactEntity> getContacts();
     List<ContactEntity> getContacts(String search);
 }

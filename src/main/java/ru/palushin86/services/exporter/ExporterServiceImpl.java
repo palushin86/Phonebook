@@ -13,9 +13,9 @@ import java.util.List;
 
 @ApplicationScoped
 public class ExporterServiceImpl implements ExporterService {
-    private static String[] xlsPhonebookColumns = {"Фамилия", "Имя", "Отчество", "Мобильный телефон", "Рабочий телефон", "Домашний телефон"};
-    private static String xlsPhonebookFilePath = "Contacts.xlsx";
-    private static String xlsPhonebookSheetName = "Контакты";
+    private static final String[] XLS_PHONEBOOK_COLUMNS = {"Фамилия", "Имя", "Отчество", "Мобильный телефон", "Рабочий телефон", "Домашний телефон"};
+    private static final String XLS_PHONEBOOK_FILE_PATH = "Contacts.xlsx";
+    private static final String XLS_PHONEBOOK_SHEET_NAME = "Контакты";
 
     private final Logger log = Logger.getLogger(this.getClass().getSimpleName());
 
@@ -25,7 +25,7 @@ public class ExporterServiceImpl implements ExporterService {
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         externalContext.responseReset();
         externalContext.setResponseContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        externalContext.setResponseHeader("Content-Disposition", "attachment; filename=" + xlsPhonebookFilePath);
+        externalContext.setResponseHeader("Content-Disposition", "attachment; filename=" + XLS_PHONEBOOK_FILE_PATH);
         Workbook workbook = createWorkBook(contacts);
 
         try {
@@ -43,7 +43,7 @@ public class ExporterServiceImpl implements ExporterService {
         Workbook workbook = new XSSFWorkbook();
         workbook.getCreationHelper();
 
-        Sheet sheet = workbook.createSheet(xlsPhonebookSheetName);
+        Sheet sheet = workbook.createSheet(XLS_PHONEBOOK_SHEET_NAME);
 
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
@@ -57,9 +57,9 @@ public class ExporterServiceImpl implements ExporterService {
 
         Row headerRow = sheet.createRow(0);
 
-        for(int i = 0; i < xlsPhonebookColumns.length; i++) {
+        for(int i = 0; i < XLS_PHONEBOOK_COLUMNS.length; i++) {
             Cell cell = headerRow.createCell(i);
-            cell.setCellValue(xlsPhonebookColumns[i]);
+            cell.setCellValue(XLS_PHONEBOOK_COLUMNS[i]);
             cell.setCellStyle(headerCellStyle);
         }
 
@@ -74,7 +74,7 @@ public class ExporterServiceImpl implements ExporterService {
             row.createCell(5).setCellValue(contact.getHomePhoneNumber());
         }
 
-        for(int i = 0; i < xlsPhonebookColumns.length; i++) {
+        for(int i = 0; i < XLS_PHONEBOOK_COLUMNS.length; i++) {
             sheet.autoSizeColumn(i);
         }
 

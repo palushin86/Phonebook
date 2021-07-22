@@ -1,5 +1,6 @@
 package ru.palushin86.services.contact;
 
+import org.apache.log4j.Logger;
 import ru.palushin86.model.ContactEntity;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -12,37 +13,22 @@ import java.util.List;
 public class ContactServiceImpl implements ContactService {
     @PersistenceContext(unitName = "PersistenceUnit")
     EntityManager entityManager;
+    private final Logger log = Logger.getLogger(this.getClass().getSimpleName());
 
     @Transactional
-    public void addContact(
-            String firstName,
-            String middleName,
-            String lastName,
-            String workPhone,
-            String mobilePhone,
-            String homePhone
-    ) {
-        ContactEntity entity = new ContactEntity();
-        entity.setFirstName(firstName);
-        entity.setMiddleName(middleName);
-        entity.setLastName(lastName);
-        entity.setWorkPhoneNumber(workPhone);
-        entity.setMobilePhoneNumber(mobilePhone);
-        entity.setHomePhoneNumber(homePhone);
-        entityManager.persist(entity);
+    public void addContact(ContactEntity contact) {
+        entityManager.persist(contact);
     }
 
     @Transactional
-    public void saveContact(
-            Integer id,
-            String firstName,
-            String middleName,
-            String lastName,
-            String workPhone,
-            String mobilePhone,
-            String homePhone
-    ) {
-        ContactEntity entity = this.getContactDetailBiId(id);
+    public void saveContact(Integer id, String firstName, String middleName, String lastName, String workPhone, String mobilePhone, String homePhone) {
+        ContactEntity entity = this.getContactById(id);
+
+        if (entity == null) {
+            log.error("contact id=" + id + " not found");
+            return;
+        }
+
         entity.setFirstName(firstName);
         entity.setLastName(lastName);
         entity.setMiddleName(middleName);
@@ -54,11 +40,17 @@ public class ContactServiceImpl implements ContactService {
 
     @Transactional
     public void deleteById(Integer id) {
-        ContactEntity contactEntity = entityManager.find(ContactEntity.class, id);
-        entityManager.remove(contactEntity);
+        ContactEntity entity = entityManager.find(ContactEntity.class, id);
+
+        if (entity == null) {
+            log.error("contact id=" + id + " not found");
+            return;
+        }
+
+        entityManager.remove(entity);
     }
 
-    public ContactEntity getContactDetailBiId(Integer id) {
+    public ContactEntity getContactById(Integer id) {
         return entityManager.find(ContactEntity.class, id);
     }
 
