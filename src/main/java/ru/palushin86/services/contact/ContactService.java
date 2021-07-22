@@ -1,4 +1,4 @@
-package ru.palushin86.services;
+package ru.palushin86.services.contact;
 
 import ru.palushin86.model.ContactEntity;
 

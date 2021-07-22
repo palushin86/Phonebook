@@ -1,15 +1,15 @@
 package ru.palushin86.view;
 
-import org.apache.log4j.Logger;
 import ru.palushin86.model.ContactEntity;
-import ru.palushin86.services.ContactService;
-import ru.palushin86.utils.ExcelWriter;
+import ru.palushin86.services.contact.ContactService;
+import ru.palushin86.services.exporter.ExporterService;
+
+import org.apache.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,8 @@ public class ContactViewBean implements Serializable {
     @Inject
     private ContactService contactService;
     @Inject
-    private ExcelWriter excelWriter;
-    private final Logger log = Logger.getLogger(this.getClass().getName());
+    private ExporterService exporterService;
+    private final Logger log = Logger.getLogger(this.getClass().getSimpleName());
     private ContactEntity editedRecord = null;
     private List<ContactEntity> contacts = new ArrayList();
     private String firstName;
@@ -117,7 +117,7 @@ public class ContactViewBean implements Serializable {
     }
 
     public void exportToExcel() {
-        excelWriter.exportPhonebook(contacts);
+        exporterService.exportPhonebookToXls(contacts);
     }
 
     public void cleanSearch() {

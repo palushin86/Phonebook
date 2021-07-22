@@ -1,4 +1,4 @@
-package ru.palushin86.services;
+package ru.palushin86.services.contact;
 
 import ru.palushin86.model.ContactEntity;
 
@@ -6,7 +6,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-
 import java.util.List;
 
 @ApplicationScoped

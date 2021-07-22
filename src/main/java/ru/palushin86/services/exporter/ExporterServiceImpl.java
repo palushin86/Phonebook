@@ -1,4 +1,4 @@
-package ru.palushin86.utils;
+package ru.palushin86.services.exporter;
 
 import org.apache.log4j.Logger;
 import ru.palushin86.model.ContactEntity;
@@ -12,15 +12,17 @@ import java.io.IOException;
 import java.util.List;
 
 @ApplicationScoped
-public class ExcelWriterImpl implements ExcelWriter {
-    private static String[] columns = {"Фамилия", "Имя", "Отчество", "Мобильный телефон", "Рабочий телефон", "Домашний телефон"};
-    private static String filePath = "C:\\Contacts.xlsx";
-    private final Logger log = Logger.getLogger(this.getClass().getName());
+public class ExporterServiceImpl implements ExporterService {
+    private static String[] xlsPhonebookColumns = {"Фамилия", "Имя", "Отчество", "Мобильный телефон", "Рабочий телефон", "Домашний телефон"};
+    private static String xlsPhonebookFilePath = "C:\\Contacts.xlsx";
+    private static String xlsPhonebookSheetName = "Контакты";
 
-    public void exportPhonebook(List<ContactEntity> contacts) {
+    private final Logger log = Logger.getLogger(this.getClass().getSimpleName());
+
+    public void exportPhonebookToXls(List<ContactEntity> contacts) {
         Workbook workbook = new XSSFWorkbook();
         workbook.getCreationHelper();
-        Sheet sheet = workbook.createSheet("Контакты");
+        Sheet sheet = workbook.createSheet(xlsPhonebookSheetName);
 
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
@@ -34,9 +36,9 @@ public class ExcelWriterImpl implements ExcelWriter {
 
         Row headerRow = sheet.createRow(0);
 
-        for(int i = 0; i < columns.length; i++) {
+        for(int i = 0; i < xlsPhonebookColumns.length; i++) {
             Cell cell = headerRow.createCell(i);
-            cell.setCellValue(columns[i]);
+            cell.setCellValue(xlsPhonebookColumns[i]);
             cell.setCellStyle(headerCellStyle);
         }
 
@@ -51,12 +53,12 @@ public class ExcelWriterImpl implements ExcelWriter {
             row.createCell(5).setCellValue(contact.getHomePhoneNumber());
         }
 
-        for(int i = 0; i < columns.length; i++) {
+        for(int i = 0; i < xlsPhonebookColumns.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
         try {
-            FileOutputStream fileOut = new FileOutputStream(filePath);
+            FileOutputStream fileOut = new FileOutputStream(xlsPhonebookFilePath);
             workbook.write(fileOut);
             fileOut.close();
             workbook.close();
@@ -64,6 +66,6 @@ public class ExcelWriterImpl implements ExcelWriter {
             log.error("exporting to excel failed. error message: " + e.getMessage());
         }
 
-        log.info("exporting to excel completed successfully. file created: " + filePath);
+        log.info("exporting to excel completed successfully. file created: " + xlsPhonebookFilePath);
     }
 }
