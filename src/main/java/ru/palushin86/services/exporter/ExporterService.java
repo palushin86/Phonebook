@@ -5,5 +5,5 @@ import ru.palushin86.model.ContactEntity;
 import java.util.List;
 
 public interface ExporterService {
-    void exportPhonebookToXls(List<ContactEntity> entities);
+    void exportContactsToXls(List<ContactEntity> contacts);
 }

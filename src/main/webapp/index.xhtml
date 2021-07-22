@@ -10,48 +10,54 @@
       <p:panel id="horizontal" header="Телефонная книга" toggleable="false" toggleOrientation="horizontal">
 
          <h:panelGrid columns="1" cellpadding="1" style="margin: 0 auto; text-align: center">
-            <h:form id="searchForm">
-               <h:panelGrid columns="4" cellpadding="10" style="margin: 0 auto">
-                  <p:outputLabel value = "Поиск" />
-                  <p:inputText value="#{contactViewBean.search}" onchange="#{contactViewBean.fetchContacts()}"/>
-                  <p:commandLink action="#{contactViewBean.fetchContacts()}" update="recordsForm">
-                      <i class="pi pi-search"/>
-                  </p:commandLink>
-                  <p:commandLink action="#{contactViewBean.cleanSearch()}" update="searchForm recordsForm">
-                      <i class="pi pi-ban"/>
-                  </p:commandLink>
-               </h:panelGrid>
-            </h:form>
+
+            <h:panelGrid columns="1" style="margin: 0 auto">
+               <h:form id="searchForm">
+                  <h:panelGrid columns="4" cellpadding="10" style="margin: 0 auto">
+                     <p:outputLabel value = "Поиск" />
+                     <p:inputText value="#{contactViewBean.search}" onchange="#{contactViewBean.fetchContacts()}" tabindex="-1" />
+                     <p:commandLink action="#{contactViewBean.fetchContacts()}" update="recordsForm" tabindex="-1">
+                         <i class="pi pi-search"/>
+                     </p:commandLink>
+                     <p:commandLink action="#{contactViewBean.cleanSearch()}" update="searchForm recordsForm" tabindex="-1">
+                         <i class="pi pi-ban"/>
+                     </p:commandLink>
+                  </h:panelGrid>
+               </h:form>
+            </h:panelGrid>
 
             <h:form id="inputForm">
                <h:panelGrid id="inputPanel" columns="4"  cellpadding="10" style="margin: 0 auto">
 
                   <p:outputLabel value = "Фамилия" />
-                  <p:inputText value="#{contactViewBean.lastName}" />
+                  <p:inputText value="#{contactViewBean.lastName}" required="true" tabindex="1" />
                   <p:outputLabel value = "Мобильный телефон" />
-                  <p:inputText value="#{contactViewBean.mobilePhone}"  />
+                  <p:inputText value="#{contactViewBean.mobilePhone}" tabindex="4" />
                   <p:outputLabel value = "Имя" />
-                  <p:inputText value="#{contactViewBean.firstName}" />
+                  <p:inputText value="#{contactViewBean.firstName}" required="true" tabindex="2"/>
                   <p:outputLabel value = "Рабочий телефон" />
-                  <p:inputText value="#{contactViewBean.workPhone}" />
-                  <p:outputLabel value = "Отчество" />
-                  <p:inputText value="#{contactViewBean.middleName}"  />
+                  <p:inputText value="#{contactViewBean.workPhone}" tabindex="5" />
+                  <p:outputLabel value = "Отчество"/>
+                  <p:inputText value="#{contactViewBean.middleName}" tabindex="3" />
                   <p:outputLabel value = "Домашний телефон" />
-                  <p:inputText value="#{contactViewBean.homePhone}" />
+                  <p:inputText value="#{contactViewBean.homePhone}" tabindex="6" />
 
                   <f:facet name = "footer">
                      <h:panelGroup style = "display:block; text-align:center">
                         <p:commandButton id = "edit_submit_btn"
                                          value = "Добавить запись"
                                          update="recordsForm inputForm" ajax="true"
+                                         tabindex="8"
                                          action="#{contactViewBean.addRecord()}" rendered="#{contactViewBean.editedRecord == null}"/>
                         <p:commandButton id = "edit_save_btn"
                                          value = "Сохранить запись"
                                          update="recordsForm inputForm" ajax="true"
+                                         tabindex="9"
                                          action="#{contactViewBean.saveRecord()}" rendered="#{contactViewBean.editedRecord != null}"/>
                         <p:commandButton id = "edit_cancel_btn"
                                          value = "Отмена"
                                          update="recordsForm inputForm" ajax="true"
+                                         tabindex="10"
                                          style="margin-left: 20px"
                                          action="#{contactViewBean.cancelEditing()}" rendered="#{contactViewBean.editedRecord != null}"/>
                      </h:panelGroup>
@@ -96,13 +102,13 @@
                   </p:column>
 
                   <p:column>
-                      <h:commandLink action="#{contactViewBean.editRecord(contact)}">
+                      <h:commandLink action="#{contactViewBean.editRecord(contact)}" tabindex="-1">
                           <i class="pi pi-user-edit"/>
                       </h:commandLink>
                   </p:column>
 
                   <p:column>
-                     <h:commandLink action="#{contactViewBean.deleteRecord(contact)}">
+                     <h:commandLink action="#{contactViewBean.deleteRecord(contact)}" tabindex="-1">
                          <i class="pi pi-trash"/>
                      </h:commandLink>
                   </p:column>
@@ -123,9 +129,14 @@
                                 value="Экспорт в Excel"
                                 widgetVar="exportToExcel"
                                 actionListener="#{contactViewBean.exportToExcel()}"
+                                ajax="false"
+                                tabindex="-1"
                                 onstart="PF('exportToExcel').disable();PF('progressPanel').show();"
-                                oncomplete="PF('exportToExcel').enable();PF('progressPanel').close();"/>
+                                oncomplete="PF('exportToExcel').enable();PF('progressPanel').close();">
+                  <f:ajax disabled="true"/>
+               </p:commandButton>
             </h:form>
+
          </h:panelGrid>
       </p:panel>
    </h:body>

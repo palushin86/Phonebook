@@ -7,21 +7,42 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import java.util.List;
 
 @ApplicationScoped
 public class ExporterServiceImpl implements ExporterService {
     private static String[] xlsPhonebookColumns = {"Фамилия", "Имя", "Отчество", "Мобильный телефон", "Рабочий телефон", "Домашний телефон"};
-    private static String xlsPhonebookFilePath = "C:\\Contacts.xlsx";
+    private static String xlsPhonebookFilePath = "Contacts.xlsx";
     private static String xlsPhonebookSheetName = "Контакты";
 
     private final Logger log = Logger.getLogger(this.getClass().getSimpleName());
 
-    public void exportPhonebookToXls(List<ContactEntity> contacts) {
+    public void exportContactsToXls(List<ContactEntity> contacts) {
+        log.info("phonebook to xls exporting start");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        externalContext.responseReset();
+        externalContext.setResponseContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        externalContext.setResponseHeader("Content-Disposition", "attachment; filename=" + xlsPhonebookFilePath);
+        Workbook workbook = createWorkBook(contacts);
+
+        try {
+            workbook.write(externalContext.getResponseOutputStream());
+            workbook.close();
+        } catch (final Exception e) {
+            log.error("phonebook to xls exporting error. error message: " + e.getMessage());
+        }
+
+        facesContext.responseComplete();
+    }
+
+    private Workbook createWorkBook(List<ContactEntity> contacts) {
+        log.info("phonebook to xls exporting. creating workbook");
         Workbook workbook = new XSSFWorkbook();
         workbook.getCreationHelper();
+
         Sheet sheet = workbook.createSheet(xlsPhonebookSheetName);
 
         Font headerFont = workbook.createFont();
@@ -57,15 +78,6 @@ public class ExporterServiceImpl implements ExporterService {
             sheet.autoSizeColumn(i);
         }
 
-        try {
-            FileOutputStream fileOut = new FileOutputStream(xlsPhonebookFilePath);
-            workbook.write(fileOut);
-            fileOut.close();
-            workbook.close();
-        } catch (IOException e) {
-            log.error("exporting to excel failed. error message: " + e.getMessage());
-        }
-
-        log.info("exporting to excel completed successfully. file created: " + xlsPhonebookFilePath);
+        return workbook;
     }
 }

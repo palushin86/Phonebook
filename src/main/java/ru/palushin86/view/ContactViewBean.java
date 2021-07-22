@@ -10,7 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +46,6 @@ public class ContactViewBean implements Serializable {
                 mobilePhone,
                 homePhone
         );
-        cleanInputPanel();
-        fetchContacts();
         log.info("the record is created: " +
                 "first name=" + firstName +
                 ", last name=" + lastName +
@@ -56,6 +54,8 @@ public class ContactViewBean implements Serializable {
                 ", work phone=" + workPhone +
                 ", home phone=" + homePhone
         );
+        cleanInputPanel();
+        fetchContacts();
     }
 
     public void saveRecord() {
@@ -69,9 +69,6 @@ public class ContactViewBean implements Serializable {
                 mobilePhone,
                 homePhone
         );
-        cleanEditing();
-        cleanInputPanel();
-        fetchContacts();
         log.info("the record id=" + id + " is saved: " +
                 "first name=" + firstName +
                 ", last name=" + lastName +
@@ -80,6 +77,9 @@ public class ContactViewBean implements Serializable {
                 ", work phone=" + workPhone +
                 ", home phone=" + homePhone
         );
+        cleanEditing();
+        cleanInputPanel();
+        fetchContacts();
     }
 
     public void editRecord(ContactEntity contact) {
@@ -117,7 +117,8 @@ public class ContactViewBean implements Serializable {
     }
 
     public void exportToExcel() {
-        exporterService.exportPhonebookToXls(contacts);
+        List<ContactEntity> records = contactService.getContacts();
+        exporterService.exportContactsToXls(records);
     }
 
     public void cleanSearch() {
