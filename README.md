@@ -1,4 +1,4 @@
-# SmartLiteTestApp
+# PhonebookTestApp
 
 Запуск:
 1. Выполнить mvn package в корневом каталоге приложения, где находится файл pom.xml
